@@ -1,0 +1,173 @@
+import React, { useState } from 'react';
+import { User, Mail, Linkedin, Facebook, Globe, Download, MapPin, Share2, Copy, Check } from 'lucide-react';
+
+const DigitalCard = () => {
+  const [copied, setCopied] = useState(false);
+
+  // Thông tin cá nhân
+  const profile = {
+    name: "Vicky Nguyen",
+    fullName: "Nguyen Doan Hanh Dung",
+    title: "PhD Candidate | Lecturer",
+    org: "NKUHT & Hue University",
+    email1: "C1312008@stu.nkuht.edu.tw",
+    email2: "Ndhdung@hueuni.edu.vn",
+    linkedin: "https://www.linkedin.com/in/vicky-nguyen",
+    facebook: "https://www.facebook.com/vickynguyen.vn",
+    orcid: "https://orcid.org/0000-0003-2631-5222",
+    location: "Vietnam & Taiwan"
+  };
+
+  // Hàm tạo file VCF để lưu danh bạ
+  const generateVCard = () => {
+    const vcardString = `BEGIN:VCARD
+VERSION:3.0
+FN:${profile.name}
+N:Nguyen;Vicky;;;
+TITLE:${profile.title}
+ORG:${profile.org}
+EMAIL;type=INTERNET;type=WORK:${profile.email1}
+EMAIL;type=INTERNET;type=HOME:${profile.email2}
+URL;type=Linkedin:${profile.linkedin}
+URL;type=Facebook:${profile.facebook}
+NOTE:Empowering Minds. Regenerating Destinations.
+END:VCARD`;
+
+    const blob = new Blob([vcardString], { type: "text/vcard;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "Vicky_Nguyen.vcf");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Hàm copy link
+  const copyLink = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 font-sans">
+      <div className="w-full max-w-md bg-white shadow-2xl rounded-3xl overflow-hidden relative">
+        
+        {/* Header Background */}
+        <div className="h-48 bg-gradient-to-br from-[#C05832] to-[#8a3c20] relative">
+          <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+          
+          {/* Share Button */}
+          <button 
+            onClick={copyLink}
+            className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm p-2 rounded-full text-white hover:bg-white/30 transition"
+          >
+            {copied ? <Check size={20} /> : <Share2 size={20} />}
+          </button>
+        </div>
+
+        {/* Profile Content */}
+        <div className="px-6 relative">
+          {/* Avatar Placeholder - Thay ảnh thật của bạn vào đây */}
+          <div className="w-32 h-32 mx-auto -mt-16 rounded-full border-4 border-white bg-gray-200 flex items-center justify-center shadow-lg relative z-10 overflow-hidden">
+             <div className="w-full h-full bg-gray-100 flex flex-col items-center justify-center text-gray-400">
+                <User size={48} />
+                <span className="text-xs mt-1">Ảnh của bạn</span>
+             </div>
+             {/* Nếu có ảnh thật, dùng thẻ img bên dưới và xóa div trên */}
+             {/* <img src="URL_ANH_CUA_BAN" alt="Vicky Nguyen" className="w-full h-full object-cover" /> */}
+          </div>
+
+          <div className="text-center mt-4 mb-8">
+            <h1 className="text-2xl font-bold text-gray-800">{profile.name}</h1>
+            <p className="text-sm text-gray-500 mb-1">{profile.fullName}</p>
+            <div className="inline-block px-3 py-1 bg-orange-50 text-[#C05832] rounded-full text-xs font-semibold tracking-wide border border-orange-100 mt-2">
+              {profile.title}
+            </div>
+            <div className="flex items-center justify-center gap-1 text-gray-400 text-xs mt-3">
+              <MapPin size={12} />
+              <span>{profile.location}</span>
+            </div>
+          </div>
+
+          {/* Main Action Button */}
+          <button 
+            onClick={generateVCard}
+            className="w-full bg-[#C05832] hover:bg-[#a04625] text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-2 mb-8"
+          >
+            <Download size={20} />
+            Lưu vào Danh bạ
+          </button>
+
+          {/* Links Section */}
+          <div className="space-y-4 mb-10">
+            
+            {/* Email 1 */}
+            <a href={`mailto:${profile.email1}`} className="flex items-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition border border-gray-100 group">
+              <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mr-4 group-hover:scale-110 transition">
+                <Mail size={20} />
+              </div>
+              <div className="flex-1 overflow-hidden">
+                <p className="text-xs text-gray-500 font-semibold uppercase">NKUHT Email</p>
+                <p className="text-gray-800 text-sm truncate">{profile.email1}</p>
+              </div>
+            </a>
+
+            {/* Email 2 */}
+            <a href={`mailto:${profile.email2}`} className="flex items-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition border border-gray-100 group">
+              <div className="w-10 h-10 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center mr-4 group-hover:scale-110 transition">
+                <Mail size={20} />
+              </div>
+              <div className="flex-1 overflow-hidden">
+                <p className="text-xs text-gray-500 font-semibold uppercase">Hue Uni Email</p>
+                <p className="text-gray-800 text-sm truncate">{profile.email2}</p>
+              </div>
+            </a>
+
+            {/* LinkedIn */}
+            <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition border border-gray-100 group">
+              <div className="w-10 h-10 rounded-full bg-blue-50 text-[#0077b5] flex items-center justify-center mr-4 group-hover:scale-110 transition">
+                <Linkedin size={20} />
+              </div>
+              <div className="flex-1">
+                <p className="text-xs text-gray-500 font-semibold uppercase">LinkedIn</p>
+                <p className="text-gray-800 text-sm font-medium">Connect with me</p>
+              </div>
+            </a>
+
+            {/* Facebook */}
+            <a href={profile.facebook} target="_blank" rel="noopener noreferrer" className="flex items-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition border border-gray-100 group">
+              <div className="w-10 h-10 rounded-full bg-blue-50 text-[#1877F2] flex items-center justify-center mr-4 group-hover:scale-110 transition">
+                <Facebook size={20} />
+              </div>
+              <div className="flex-1">
+                <p className="text-xs text-gray-500 font-semibold uppercase">Facebook</p>
+                <p className="text-gray-800 text-sm font-medium">vickynguyen.vn</p>
+              </div>
+            </a>
+
+             {/* ORCID */}
+             <a href={profile.orcid} target="_blank" rel="noopener noreferrer" className="flex items-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition border border-gray-100 group">
+              <div className="w-10 h-10 rounded-full bg-green-50 text-[#A6CE39] flex items-center justify-center mr-4 group-hover:scale-110 transition">
+                <Globe size={20} />
+              </div>
+              <div className="flex-1">
+                <p className="text-xs text-gray-500 font-semibold uppercase">Research Profile</p>
+                <p className="text-gray-800 text-sm font-medium">ORCID Record</p>
+              </div>
+            </a>
+          </div>
+
+          <div className="text-center pb-8 border-t border-gray-200 pt-6">
+             <p className="font-serif italic text-gray-400 text-lg">"Empowering Minds.<br/>Regenerating Destinations."</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DigitalCard;
